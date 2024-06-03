@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Upload</title>
+</head>
+<body>
+  <h1>Upload Image</h1>
+  <form id="uploadForm">
+    <input type="file" id="fileInput" name="file" accept="image/*" required>
+    <button type="submit">Upload</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('YOUR_WORKER_URL', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      const resultDiv = document.getElementById('result');
+      if (response.ok) {
+        resultDiv.innerHTML = `<p>Image uploaded successfully: <a href="${result.url}" target="_blank">${result.url}</a></p>`;
+        resultDiv.innerHTML += `<p>Embed Code: <textarea><img src="${result.url}" alt="Uploaded Image"></textarea></p>`;
+      } else {
+        resultDiv.textContent = 'Image upload failed';
+      }
+    });
+  </script>
+</body>
+</html>
